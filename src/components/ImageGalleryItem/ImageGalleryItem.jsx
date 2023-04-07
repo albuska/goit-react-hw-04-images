@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import {
   ImageGalleryItemLi,
   ImageGalleryItemImage,
@@ -6,41 +6,34 @@ import {
 import PropTypes from 'prop-types';
 import { Modal } from 'components/Modal/Modal';
 
-export class ImageGalleryItem extends Component {
-  state = {
-    isOpenModal: false,
+export const ImageGalleryItem = ({ webformatURL, user, largeImageURL }) => {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsOpenModal(true);
   };
 
-  handleOpenModal = () => {
-    this.setState({ isOpenModal: true });
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
   };
 
-  handleCloseModal = () => {
-    this.setState({ isOpenModal: false });
-  };
-
-  render() {
-    const {
-      item: { webformatURL, user, largeImageURL },
-    } = this.props;
-    return (
-      <ImageGalleryItemLi>
-        <ImageGalleryItemImage
-          src={webformatURL}
-          alt={user}
-          onClick={this.handleOpenModal}
+  return (
+    <ImageGalleryItemLi>
+      <ImageGalleryItemImage
+        src={webformatURL}
+        alt={user}
+        onClick={handleOpenModal}
+      />
+      {isOpenModal && (
+        <Modal
+          image={largeImageURL}
+          user={user}
+          closeModal={handleCloseModal}
         />
-        {this.state.isOpenModal && (
-          <Modal
-            image={largeImageURL}
-            user={user}
-            closeModal={this.handleCloseModal}
-          />
-        )}
-      </ImageGalleryItemLi>
-    );
-  }
-}
+      )}
+    </ImageGalleryItemLi>
+  );
+};
 
 ImageGalleryItem.propTypes = {
   item: PropTypes.shape({

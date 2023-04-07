@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GlobalStyle } from '../GlobalStyle';
 import { AppContainer } from './App.styled';
 import { SearchBar } from '../Searchbar/Searchbar';
@@ -18,69 +18,63 @@ export const App = () => {
   const [totalPage, setTotalPage] = useState(0);
 
   const handleSearchFormSubmit = inputValue => {
-    setInputValue(inputValue);
     setImages([]);
-    setPage(1); 
+    setPage(1);
   };
 
-  componentDidUpdate(_, prevState) {
-    if (
-      prevState.inputValue !== this.state.inputValue ||
-      prevState.page !== this.state.page
-    ) {
-      this.setState({ loading: true });
-      fetch(
-        `https://pixabay.com/api/?q=${this.state.inputValue}&page=${this.state.page}&key=33675530-14a54e49ac2d12a2b0a037dca&image_type=photo&orientation=horizontal&per_page=${this.state.perPage}`
-      )
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          return Promise.reject(
-            new Error(`Oops...No such name found ${this.props.inputValueName}`)
-          );
-        })
-        .then(data => {
-          if (data.hits.length === 0) {
-            toast.error(`Oops...No such name found ${this.state.inputValue}`);
-          }
-          const pages = Math.ceil(data.totalHits / this.state.perPage);
-          this.setState(({ images, totalPage, loading }) => ({
-            images: [...images, ...data.hits],
-            totalPage: pages,
-            loading: true,
-          }));
-        })
-        .catch(error => this.setState({ error }))
-        .finally(() => this.setState({ loading: false }));
-    }
-  }
+      setInputValue(inputValue);
 
-const handleReadMore = () => {
-  setPage(prevState => prevState + 1);
+  useEffect(() => {
+    setLoading(true);
+    if (inputValue === '') {
+      return; 
+}
+    fetch(
+      `https://pixabay.com/api/?q=${inputValue}&page=${page}&key=33675530-14a54e49ac2d12a2b0a037dca&image_type=photo&orientation=horizontal&per_page=${perPage}`
+    )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(
+          new Error(`Oops...No such name found ${inputValue}`)
+        );
+      })
+      .then(data => {
+        if (data.hits.length === 0) {
+          toast.error(`Oops...No such name found ${inputValue}`);
+        }
+        const pages = Math.ceil(data.totalHits / perPage);
+        setImages(prevState => [...prevState, ...data.hits]);
+        setTotalPage(pages); 
+        setLoading(true); 
+      })
+      .catch(error => setError(error))
+      .finally(() => setLoading(false));
+  }, [inputValue, page, perPage]);
+
+  const handleReadMore = () => {
+    setPage(prevState => prevState + 1);
   };
 
-  
-    const showButton = this.state.images.length >= 12;
-    const { images, page, totalPage, loading, error } = this.state;
+  const showButton = images.length >= 12;
 
-    return (
-      <AppContainer>
-        <SearchBar onSubmit={this.handleSearchFormSubmit} />
-        {error && <h1>{error.message}</h1>}
-        {images.length > 0 && <ImageGallery images={images} />}
-        {loading && (
-          <div>
-            <Loader />
-          </div>
-        )}
+  return (
+    <AppContainer>
+      <SearchBar onSubmit={handleSearchFormSubmit} />
+      {error && <h1>{error.message}</h1>}
+      {images.length > 0 && <ImageGallery images={images} />}
+      {loading && (
+        <div>
+          <Loader />
+        </div>
+      )}
 
-        {showButton && !loading && page < totalPage && (
-          <Button onClick={this.handleReadMore} />
-        )}
-        <GlobalStyle />
-        <ToastContainer autoClose={3000} />
-      </AppContainer>
-    );
-  }
-
+      {showButton && !loading && page < totalPage && (
+        <Button onClick={handleReadMore} />
+      )}
+      <GlobalStyle />
+      <ToastContainer autoClose={3000} />
+    </AppContainer>
+  );
+};
