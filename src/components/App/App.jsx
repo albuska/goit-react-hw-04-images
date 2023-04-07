@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { GlobalStyle } from '../GlobalStyle';
 import { AppContainer } from './App.styled';
 import { SearchBar } from '../Searchbar/Searchbar';
@@ -8,19 +8,19 @@ import { Loader } from 'components/Loader/Loader';
 import { Button } from 'components/Button/Button';
 import { toast } from 'react-toastify';
 
-export class App extends Component {
-  state = {
-    inputValue: '',
-    images: [],
-    page: 1,
-    perPage: 12,
-    error: null,
-    loading: false,
-    totalPage: 0,
-  };
+export const App = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(12);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [totalPage, setTotalPage] = useState(0);
 
-  handleSearchFormSubmit = inputValue => {
-    this.setState({ inputValue, images: [], page: 1 });
+  const handleSearchFormSubmit = inputValue => {
+    setInputValue(inputValue);
+    setImages([]);
+    setPage(1); 
   };
 
   componentDidUpdate(_, prevState) {
@@ -56,15 +56,11 @@ export class App extends Component {
     }
   }
 
-  handleReadMore = () => {
-    this.setState(prevState => {
-      return {
-        page: prevState.page + 1,
-      };
-    });
+const handleReadMore = () => {
+  setPage(prevState => prevState + 1);
   };
 
-  render() {
+  
     const showButton = this.state.images.length >= 12;
     const { images, page, totalPage, loading, error } = this.state;
 
@@ -87,4 +83,4 @@ export class App extends Component {
       </AppContainer>
     );
   }
-}
+
