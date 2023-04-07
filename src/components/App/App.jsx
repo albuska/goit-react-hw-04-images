@@ -39,7 +39,6 @@ export const App = () => {
         );
       })
       .then(data => {
-        console.log(data.hits)
         if (data.hits.length === 0) {
           toast.error(`Oops...No such name found ${inputValue}`);
         }
