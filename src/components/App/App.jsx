@@ -43,9 +43,9 @@ export const App = () => {
           toast.error(`Oops...No such name found ${inputValue}`);
         }
         const pages = Math.ceil(data.totalHits / 12);
+        setLoading(true);
         setImages(prevState => [...prevState, ...data.hits]);
         setTotalPage(pages);
-        setLoading(true);
       })
       .catch(error => setError(error))
       .finally(() => setLoading(false));
