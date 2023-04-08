@@ -23,10 +23,10 @@ export const App = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
     if (inputValue === '') {
       return;
     }
+    setLoading(true);
     fetch(
       `https://pixabay.com/api/?q=${inputValue}&page=${page}&key=33675530-14a54e49ac2d12a2b0a037dca&image_type=photo&orientation=horizontal&per_page=12`
     )
