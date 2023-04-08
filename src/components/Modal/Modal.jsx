@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 export const Modal = ({ closeModal, image, user }) => {
   useEffect(() => {
     window.addEventListener('keydown', handleKeydown);
-
     return () => {
       window.removeEventListener('keydown', handleKeydown);
     };
