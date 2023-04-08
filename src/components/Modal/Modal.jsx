@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 
 export const Modal = ({ closeModal, image, user }) => {
   useEffect(() => {
+    const handleKeydown = event => {
+      if (event.code === 'Escape') {
+        closeModal();
+      }
+    };
+
     window.addEventListener('keydown', handleKeydown);
     return () => {
       window.removeEventListener('keydown', handleKeydown);
     };
   });
-
-  const handleKeydown = event => {
-    if (event.code === 'Escape') {
-      closeModal();
-    }
-  };
 
   const handleBackdropClick = event => {
     if (event.target === event.currentTarget) {
