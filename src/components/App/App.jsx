@@ -62,11 +62,11 @@ export const App = () => {
       <SearchBar onSubmit={handleSearchFormSubmit} />
       {error && <h1>{error.message}</h1>}
       {images.length > 0 && <ImageGallery images={images} />}
-      {/* {loading && (
+      {loading && (
         <div>
           <Loader />
         </div>
-      )} */}
+      )}
 
       {showButton && !loading && page < totalPage && (
         <Button onClick={handleReadMore} />
